@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <% include ../partials/head %>
+    </head>
+    <body>
+        <% include ../partials/header %>
+        <% include ../partials/nav %>
+
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-5">
+                    <h2>Add Records</h2>
+                    <div class="well">
+                        <div class="alert alert-success alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <strong>Nothing here now</strong> 
+                        </div>
+                        <form method="post" action="/consultant/add_data/<%= clientId %>" name="add_data_form">
+                            <div class="form-group">
+                                <label for="inputName">Name of client</label>
+                                <input type="text" class="form-control form-control-static" id="inputName" name="name" placeholder="full name " value="Sandip" disabled="disabled">
+                                <input type="hidden" name="id" value="<%= clientId %>"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputDate">Select date</label>
+                                <input type="date" class="form-control" id="inputDate" name="date" placeholder="date" value="01/01/2013">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputParticulars">Particulars</label>
+                                <textarea class="form-control" id="inputParticulars" name="particulars" placeholder="Record information">teset</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputUsername">Amount</label>
+                                <div class="input-group">
+                                  <span class="input-group-addon">$</span>
+                                  <input type="text" name='amount' class="form-control" aria-label="Amount">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Record</button>
+                        </form>
+                    </div>
+                </div> <!-- left sidebar -->
+
+                <div class="col-lg-7">
+                    <div class="panel panel-success">
+                        <div class="panel-heading"><h2>Data Records</h2></div>
+                            <div class="panel-body list-group">
+                                <% for(var i=0;i<data.length;i++){%>
+                                <div class="list-group-item">
+                                    <%= data[i].amount%>
+                                    <span class="pull-right">
+                                        <a class="btn btn-warning btn-xs" href="/consultant/del_client/"><i class="fa fa-remove text-danger"> Remove Client</i></a>
+                                    </span>
+                                </div>
+                                <% } %>
+                            </div>
+                    </div>
+
+
+                </div> <!-- Main Content -->
+
+            </div>
+        </div>
+        <% include ../partials/footer %>
+        <% include ../partials/jsdefaults %>
+    </body>
+</html>

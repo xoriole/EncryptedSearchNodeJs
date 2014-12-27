@@ -1,0 +1,14 @@
+{
+  "dev": {
+    "driver": "mysql",
+    "user": "root",
+    "database": "enc_search",
+    "password": ""
+  },
+ 
+  "production": {
+    "driver": "mysql",
+    "user": "root",
+    "database": "enc_search"
+  }
+}

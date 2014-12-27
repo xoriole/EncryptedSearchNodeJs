@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {{>head}}
+    </head>
+    <body>
+        {{>header}}
+        {{>nav}}
+
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="list-group">
+                        <a href="/home" class="list-group-item">Home</a>
+                        <a href="/key_setup" class="list-group-item">Key Setup</a>
+                        <a href="/insert" class="list-group-item">Client's Data</a>
+                        <a href="/insert" class="list-group-item active">Insert New Data</a>
+                        <a href="/search" class="list-group-item">Search Data</a>
+                    </div>
+                </div> <!-- left sidebar -->
+
+                <div class="col-lg-9">
+                    <h2>Insert Data</h2><hr/>
+                    <form class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-2 control-label">Client</label>
+                            <div class="col-sm-10">
+                                <select name="client_id" class="form-control">
+                                    <option value="1">Sandip</option>
+                                    <option value="2">Herson</option>
+                                    <option value="3">Yasan</option>
+                                    <option value="4">Niels</option>
+                                </select>
+                                <!--<input type="email" class="form-control" id="inputEmail3" placeholder="Email">-->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="date" class="col-sm-2 control-label">Date</label>
+                            <div class="col-sm-10">
+                                <input type="date" class="form-control" id="date" placeholder="Date">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount" class="col-sm-2 control-label">Amount</label>
+                            <div class="col-sm-10">
+                                <div class="input-group">
+                                    <!--<label class="sr-only" for="exampleInputEmail2">Email address</label>-->
+                                    <div class="input-group-addon"> € </div>
+                                    <input type="text" class="form-control" id="amount" placeholder="Amount (€)">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="particulars" class="col-sm-2 control-label">Particulars</label>
+                            <div class="col-sm-10">
+                                <textarea class="form-control" id="particulars" placeholder="Particulars"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox"> I confirm above data is correct.
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-default">Insert Data</button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div> <!-- Main Content -->
+            </div>
+        </div>
+
+        {{>footer}}
+        {{>jsdefaults}}
+    </body>
+</html>

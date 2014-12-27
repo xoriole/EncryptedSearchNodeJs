@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <% include partials/head %>
+    </head>
+    <body>
+        <% include partials/header %>
+        <% include partials/nav %>
+
+        <div class="container">
+            <div class="row">
+
+                <div class="col-lg-3">
+                    <div class="list-group">
+                        <a href="/home" class="list-group-item active">Home</a>
+                        <a href="/key_setup" class="list-group-item">Key Setup</a>
+                        <a href="/insert" class="list-group-item">Insert Data</a>
+                        <a href="/search" class="list-group-item">Search Data</a>
+                    </div>
+                </div> <!-- left sidebar -->
+
+                <div class="col-lg-6">
+                    <div class="panel panel-success">
+                        <div class="panel-heading"><h2>Clients</h2></div>
+                            <div class="panel-body list-group">
+                                <% for(var i=0;i<clients.length;i++){ %>
+                                <div class="list-group-item">
+                                    <b><%= clients[i].name %></b>
+                                    <span class="pull-right">
+                                        <a class="btn btn-warning btn-xs" href="/consultant/del_client/<%= clients[i].id %>"><i class="fa fa-remove text-danger"> Remove Client</i></a>
+                                        <a class="btn btn-success btn-xs" href="/consultant/list_data/<%= clients[i].id %>">Show Data <i class="fa fa-list"></i></a>
+                                        <a class="btn btn-primary btn-xs" href="/consultant/client/<%= clients[i].id %>">Add Data <i class="fa fa-plus-square"></i></a>
+                                    </span>
+                                </div>
+                                <% } %>
+                            </div>
+                    </div>
+
+
+                </div> <!-- Main Content -->
+
+                <div class="col-lg-3">
+                    <h2>Add client</h2>
+                    <div class="well">
+
+                        <% if(typeof msg  !== undefined || msg.length<1){ %>
+                            <div class="alert alert-success alert-dismissible" role="alert">
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <strong>msg</strong> 
+                            </div>
+                        <% } %>
+
+                        <form method="post" action="/consultant/add_client" name="login_form">
+                            <div class="form-group">
+                                <label for="inputName">Name of client</label>
+                                <input type="text" class="form-control" id="inputName" name="inputName" placeholder="full name ">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputUsername">Choose a username for client</label>
+                                <input type="text" class="form-control" id="inputUsername" name="inputUsername" placeholder="username">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword">Choose a Password for client</label>
+                                <input type="password" class="form-control" id="inputPassword" name="inputPassword" placeholder="password">
+                            </div>
+                            <button type="submit" class="btn btn-default">Add Client</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% include partials/footer %>
+        <% include partials/jsdefaults %>
+    </body>
+</html>

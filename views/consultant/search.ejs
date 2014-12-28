@@ -19,7 +19,7 @@
                             <b><i class='fa fa-search'></i> Search Box</b>
                         </div>
                         <div class="panel-body">
-                            <form method="post" action="/consultant/search%>" name="search_form">
+                            <form method="post" action="/consultant/search" name="search_form">
                                 <div class="form-group">
                                     <label for="inputName">Name of client</label>
                                     <select name='clientId' class="form-control">
@@ -52,7 +52,11 @@
 
                 <div class="col-lg-8">
                     <div class="well well-sm alert-info">
-                    <b>Search Results</b> 
+                        <b>Search Results  </b> 
+                        <span class="label label-info">Client : <%= query.client%></span>
+                        <span class="label label-info">Date : <%= query.date?query.date:'...'%></span>
+                        <span class="label label-info">Particulars : <%= query.particulars?query.particulars:'...'%></span>
+                        <span class="label label-info">Amount : $<%= query.amount?query.amount:'...'%></span>
                     </div>
                     <div class="panel panel-info">
                         <div class="panel-heading"><b>Client Data Records (<%= data.length%>)</b></div>
@@ -69,7 +73,7 @@
                                 <% for(var i=0;i<data.length;i++){%>
                                     <tr>
                                       <th scope="row"><%= data[i].date.toISOString().slice(0, 10)%></th>
-                                      <td><%= data[i].particulars %></td>
+                                      <td style='max-width:300px'><%= data[i].particulars %></td>
                                       <td><%= data[i].amount %></td>
                                     </tr>
                                 <% } %> 

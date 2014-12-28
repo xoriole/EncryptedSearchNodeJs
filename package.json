@@ -17,6 +17,7 @@
         "se": "xoriole/searchable-encryption-js",
         "mysql": "*",
         "express-myconnection": "*",
-        "express-session": "1.9.3"
+        "express-session": "1.9.3",
+        "underscore":"1.7.0"
     }
 }

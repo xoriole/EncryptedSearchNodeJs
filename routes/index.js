@@ -65,7 +65,13 @@ router.get('/insert', function (req, res) {
 
 /* GET admin key setup page. */
 router.get('/search', function (req, res) {
-    res.render('search', {title: 'Search client data', partials: {nav: 'partials/nav'}});
+    if(req.session.role=="consultant"){
+        res.redirect("/consultant/search");
+    }else if(req.session.role=="client"){
+        res.redirect("/client/search");
+    }else{
+        res.redirect("/login");
+    }
 });
 
 /* GET admin key setup page. */

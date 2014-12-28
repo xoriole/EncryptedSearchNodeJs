@@ -140,41 +140,26 @@ router.post('/add_data/:clientId', function (req, res) {
     //get password of the client
     var password=null;
     req.getConnection(function (err, connection) {
-        var encPassword = db.getClientPassword(clientId,connection, err);
 
-        console.log("enc pass:"+encPassword);
-        if(encPassword!=null){
-            password = crypto.decryptAES(encPassword,req.session.password);
-            console.log("dec pass:"+password);
-        }    
-    });
-
-    // var encPassword = "";
-    //     connection.query("select enc_password from user_login where userId=?", [clientId], function (err, results) {
-    //         if (err) {
-    //             console.log(err);
-    //         }else{
-    //             console.log("results:"+results[0].enc_password);
-    //             encPassword = results[0].enc_password;
-    //         }
-    //     });
-    //     console.log("db enc pass:"+encPassword)
-    // //console.log("password: "+password);
-
-    req.getConnection(function (err, connection) {
-        // insert into user table
-        var summary = crypto.encrypt("Just testing now",password);
-        connection.query("INSERT INTO `enc_search`.`record` (`clientId`, `particulars`, `amount`, `authorId`, `summary`, date) VALUES (?, ?, ?, ?, ?,?);",
-                [clientId, particulars, amount, authorId, summary, date], function (err, results) {
+        connection.query("select enc_password from user_login where userId=?", [clientId], function (err, results) {
             if (err) {
                 console.log(err);
-                error = true;
+            }else{
+                password = crypto.decryptAES(results[0].enc_password,req.session.password);
+
+                var summary = crypto.encrypt("Just testing now",password);
+                connection.query("INSERT INTO `enc_search`.`record` (`clientId`, `particulars`, `amount`, `authorId`, `summary`, date) VALUES (?, ?, ?, ?, ?,?);",
+                        [clientId, particulars, amount, authorId, summary, date], function (err, results) {
+                    if (err) {
+                        console.log(err);
+                        error = true;
+                        return;
+                    }
+                    res.redirect('/consultant/client/'+clientId);
+                });
             }
-        });
+        }); 
     });
-    console.log("add data from consultant");
-    res.redirect('/consultant/client/'+clientId);
-    //res.render('consultant/add_data', {title: 'Home', error: {}, session: req.session, clientId:clientId});
 });
 
 
@@ -189,6 +174,7 @@ router.get('/search', function(req,res){
                 res.render('consultant/search',{
                 title: 'Home',  
                 error: {}, 
+                query: {},
                 data:[],
                 clients: results,
                 session: req.session
@@ -198,6 +184,70 @@ router.get('/search', function(req,res){
         });
         
     });
+});
+
+router.post('/search', function(req,res){
+    var query = req.body;
+    var clientId = req.body.clientId;
+    var date = req.body.date;
+    var particulars = req.body.particulars;
+    var amount = req.body.amount;
+
+    var sql="select * from record where";
+    if(clientId!=0){
+        sql+=" clientId="+clientId;
+    }else{
+        sql+=" clientId in (select id from user where consultantId = "+req.session.userId+" and isClient=1)";
+    }
+
+    if(date!=undefined&& date!=""){
+        sql+=" and date='"+date+"'";
+    }
+
+    if(amount!=undefined&& amount!=""){
+        sql+=" and amount="+amount;
+    }
+
+    // sort in descending order
+    sql+=" order by id desc";
+    console.log(sql);
+
+    req.getConnection(function (err, connection) {
+        connection.query("select id, username, name from user join user_login on user.id=user_login.userId where role='client' and consultantId=?",
+                [req.session.userId], function (err, results1) {
+            if (err) {
+                console.log(err);
+            }else{
+                var clients = results1;
+                if(clientId==0){
+                    query.client = "All";
+                }else{
+                    query.client = "N/A";
+                    for(var k=0;k<clients.length;k++){
+                        if(clients[k].id==clientId){
+                            query.client=clients[k].name;
+                            break;
+                        }
+                    }
+                }
+                connection.query(sql,[], function (err2, results2) {
+                    if(err2){
+                        console.log(err2);
+                    }else{
+                        res.render('consultant/search',{
+                            title: 'Home',  
+                            error: {}, 
+                            query:query,
+                            data:results2,
+                            clients: results1,
+                            session: req.session
+                        });
+                    }
+                });
+            }
+        });
+    });
+
 });
 
 /* GET admin key setup page. */

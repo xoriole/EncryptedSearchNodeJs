@@ -30,7 +30,8 @@ app.use(session({
 }));
 
 var routes = require('./routes/index');
-var users = require('./routes/consultant');
+var consultantRoute = require('./routes/consultant');
+var clientRoute = require('./routes/client');
 
 
 
@@ -57,7 +58,8 @@ app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/consultant', users);
+app.use('/consultant', consultantRoute);
+app.use('/client', clientRoute);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

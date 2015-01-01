@@ -26,12 +26,16 @@ module.exports = {
 		return se.encrypt(key, plaintext);
 	},
 
+	encryptQuery: function(query, key){
+		return se.encrypt_word(key, query);
+	},
+
 	decrypt: function(ciphertext, key){
 		return se.decrypt(key, ciphertext);
 	},
 
 	search: function(ciphertext, enc_query){
-		se.search(ciphertext, enc_query);
+		return se.search(ciphertext, enc_query);
 	}
 
 }

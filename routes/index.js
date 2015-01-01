@@ -47,6 +47,10 @@ router.post('/login', function (req, res) {
                 req.session.password = password;
                 //console.log(req.session);
                 if(results[0].role=="consultant"){
+                    //select all clients of consultant and their key
+                    //connection.query("SELECT user.id, user.name, user.username, user_login.role, user.consultantId FROM user_login, user WHERE user.id=user_login.userId and user.username=? and user_login.password=?", [username, crypto.createHash(password)], function (err, results) {
+        
+
                     res.redirect("/consultant/home");
                 }else{
                     res.redirect("/client/home");

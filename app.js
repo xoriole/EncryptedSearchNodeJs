@@ -15,14 +15,14 @@ dbOptions = {
       user: 'root',
       password: '',
       port: 3306,
-      database: 'enc_search'
+      database: 'enc_search2'
     };
 
 app.use(myConnection(mysql, dbOptions, 'single'));
 
 app.use(session({
     secret: 'HQBDy4KMny#',
-    name: 'enc_search',
+    name: 'enc_search2',
 //    store: sessionStore, // connect-mongo session store
     proxy: true,
     resave: true,
@@ -34,19 +34,9 @@ var consultantRoute = require('./routes/consultant');
 var clientRoute = require('./routes/client');
 
 
-
-
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'hjs');
 app.set('view engine', 'ejs');
-// app.set('views', __dirname + '/views');
-// app.set('view engine', 'html');
-// app.enable('view cache');
-// app.engine('html', require('hogan-express'));
-// app.set('partials', {head:'partials/head',jsdefaults:'partials/jsdefaults',header:'partials/header',footer:'partials/footer'});
-
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));

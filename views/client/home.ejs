@@ -64,7 +64,7 @@
                             <% if(data.length!=0){%>
                                 <% for(var i=0;i<data.length;i++){%>
                                     <tr>
-                                      <th scope="row"><%= data[i].date.toISOString().slice(0, 10)%></th>
+                                      <th scope="row"><%= data[i].date%></th>
                                       <td style='max-width:300px'><%= data[i].particulars %></td>
                                       <td><%= data[i].amount %></td>
                                     </tr>

@@ -2,13 +2,13 @@
   "dev": {
     "driver": "mysql",
     "user": "root",
-    "database": "enc_search",
+    "database": "enc_search2",
     "password": ""
   },
  
   "production": {
     "driver": "mysql",
     "user": "root",
-    "database": "enc_search"
+    "database": "enc_search2"
   }
 }

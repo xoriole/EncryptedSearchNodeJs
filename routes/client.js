@@ -29,14 +29,18 @@ router.get('/home', function (req, res) {
                         }
                         consultantInfo = results1[0];
                     
+                        var __clientId = crypto.encrypt(clientId+"",req.session.password);
                         connection.query("select id, clientId, particulars, amount, date from record where clientId = ?",
-                                [clientId], function (err, results2) {
+                                [__clientId], function (err, results2) {
                             if (err) {
                                 console.log(err);
                             }
                             var decResult = [];
                             for(var d=0;d<results2.length;d++){
                                 var row = results2[d];
+                                row.clientId = clientId;
+                                row.amount = crypto.decrypt(row.amount, req.session.password);
+                                row.date = crypto.decrypt(row.date, req.session.password);
                                 row.particulars = crypto.decrypt(row.particulars, req.session.password);
                                 decResult.push(row);
                             }
@@ -67,9 +71,14 @@ router.post('/add_data', function (req, res) {
     console.log(crypto.encrypt(particulars,password));
     console.log(crypto.decrypt(crypto.encrypt(particulars,password),password));
     req.getConnection(function (err, connection) {
-        summary = crypto.encrypt(summary,password);
-        connection.query("INSERT INTO `enc_search`.`record` (`clientId`, `particulars`, `amount`, `authorId`, `summary`, date) VALUES (?, ?, ?, ?, ?,?);",
-                [clientId, crypto.encrypt(particulars,password), amount, authorId, summary, date], function (err, results) {
+        var _clientId = crypto.encrypt(clientId+"",password);
+        var _date = crypto.encrypt(date+"",password);
+        var _particulars = crypto.encrypt(particulars+"",password);
+        var _amount = crypto.encrypt(amount+"",password);
+        var _authorId = crypto.encrypt(authorId+"",password);
+        var _summary = crypto.encrypt(summary,password);
+        connection.query("INSERT INTO `record` (`clientId`, `particulars`, `amount`, `authorId`, `summary`, date) VALUES (?, ?, ?, ?, ?,?);",
+                [_clientId, _particulars, _amount, _authorId, _summary, _date], function (err, results) {
             if (err) {
                 console.log(err);
                 error = true;
@@ -96,11 +105,12 @@ router.get('/search', function(req,res){
 router.post('/search', function(req,res){
     var query = req.body;
     var clientId = req.session.userId;
+    var __clientId = crypto.encrypt(clientId+"",req.session.password);
     var date = req.body.date;
     var particulars = req.body.particulars;
     var amount = req.body.amount;
 
-    var sql="select * from record where clientId="+clientId;
+    var sql="select * from record where clientId='"+__clientId+"'";
 
     if(date!=undefined&& date!=""){
         sql+=" and date='"+date+"'";
@@ -126,6 +136,9 @@ router.post('/search', function(req,res){
                     for(var d=0;d<results2.length;d++){
                         var row = results2[d];
                         if(crypto.search(row.particulars,enc_particular)){
+                            row.clientId = clientId;
+                            row.amount = crypto.decrypt(row.amount, req.session.password);
+                            row.date = crypto.decrypt(row.date, req.session.password);
                             row.particulars = crypto.decrypt(row.particulars, req.session.password);
                             decResult.push(row); 
                         }
@@ -133,6 +146,9 @@ router.post('/search', function(req,res){
                 }else{
                     for(var d=0;d<results2.length;d++){
                         var row = results2[d];
+                        row.clientId = clientId;
+                        row.amount = crypto.decrypt(row.amount, req.session.password);
+                        row.date = crypto.decrypt(row.date, req.session.password);
                         row.particulars = crypto.decrypt(row.particulars, req.session.password);
                         decResult.push(row); 
                     }

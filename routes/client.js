@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var se = require('se');
 var crypto = require('../models/crypto_');
-var db = require('../models/db');
+//var db = require('../models/db');
 
 router.get('/:kk', function(req,res,next){
     if(req.session.logged!=true){
@@ -13,40 +13,40 @@ router.get('/:kk', function(req,res,next){
 });
 
 /* GET home page. */
-router.get('/home', function (req, res) {
+router.get('/home1', function (req, res) {
     req.getConnection(function (err, connection) {
-        connection.query("SELECT id, name, username FROM `user_login`, user WHERE user_login.userId=user.id and consultantId=? and role='client'", [req.session.userId ? req.session.userId : 1], function (err, results) {
+        //connection.query("SELECT id, name, username FROM `user_login`, user WHERE user_login.userId=user.id and consultantId=? and role='client'", [req.session.userId ? req.session.userId : 1], function (err, results) {
+        connection.query("SELECT id, name, username FROM user WHERE id=user.id and consultantId=? and role=?", [crypto.encrypt(req.session.userId+"", req.session.password), crypto.encrypt("client",req.session.password)], function (err, results) {
             if (err) {
                 console.log(err);
             }else{
+                console.log(results);
                 var clientId = req.session.userId;
                 var consultantInfo = {};
-                req.getConnection(function (err, connection) {
-                    connection.query("select * from user, user_login where user.id = user_login.userId and user.id=?",
-                            [req.session.consultantId], function (err, results1) {
+                connection.query("select * from user where user.id=?",
+                        [req.session.consultantId], function (err, results1) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    consultantInfo = results1[0];
+                
+                    var __clientId = crypto.encrypt(clientId+"",req.session.password);
+                    connection.query("select id, clientId, particulars, amount, date from record where clientId = ?",
+                            [__clientId], function (err, results2) {
                         if (err) {
                             console.log(err);
                         }
-                        consultantInfo = results1[0];
-                    
-                        var __clientId = crypto.encrypt(clientId+"",req.session.password);
-                        connection.query("select id, clientId, particulars, amount, date from record where clientId = ?",
-                                [__clientId], function (err, results2) {
-                            if (err) {
-                                console.log(err);
-                            }
-                            var decResult = [];
-                            for(var d=0;d<results2.length;d++){
-                                var row = results2[d];
-                                row.clientId = clientId;
-                                row.amount = crypto.decrypt(row.amount, req.session.password);
-                                row.date = crypto.decrypt(row.date, req.session.password);
-                                row.particulars = crypto.decrypt(row.particulars, req.session.password);
-                                decResult.push(row);
-                            }
-                            console.log("result:"+decResult);
-                            res.render('client/home', {title: 'Home', consultantInfo:consultantInfo, clients:results, error: {}, session: req.session, clientId:clientId, data:results2});
-                        });
+                        var decResult = [];
+                        for(var d=0;d<results2.length;d++){
+                            var row = results2[d];
+                            row.clientId = clientId;
+                            row.amount = crypto.decrypt(row.amount, req.session.password);
+                            row.date = crypto.decrypt(row.date, req.session.password);
+                            row.particulars = crypto.decrypt(row.particulars, req.session.password);
+                            decResult.push(row);
+                        }
+                        console.log("result:"+decResult);
+                        res.render('client/home', {title: 'Home', consultantInfo:consultantInfo, clients:results, error: {}, session: req.session, clientId:clientId, data:results2});
                     });
                 });
             }
@@ -54,6 +54,49 @@ router.get('/home', function (req, res) {
     });
 });
 
+/* GET home page. */
+router.get('/home', function (req, res) {
+    req.getConnection(function (err, connection) {
+        //connection.query("SELECT id, name, username FROM `user_login`, user WHERE user_login.userId=user.id and consultantId=? and role='client'", [req.session.userId ? req.session.userId : 1], function (err, results) {
+        // connection.query("SELECT id, name, username FROM user WHERE id=user.id and consultantId=? and role=?", [crypto.encrypt(req.session.userId+"", req.session.password), crypto.encrypt("client",req.session.password)], function (err, results) {
+        //     if (err) {
+        //         console.log(err);
+        //     }else{
+        //         console.log(results);
+                var clientId = req.session.userId;
+        //         var consultantInfo = {};
+        //         connection.query("select * from user where user.id=?",
+        //                 [req.session.consultantId], function (err, results1) {
+        //             if (err) {
+        //                 console.log(err);
+        //             }
+                    var consultantName = req.session.consultantName;
+                
+                    var __clientId = crypto.encrypt(clientId+"",req.session.password);
+                    //console.log("client id:"+)
+                    connection.query("select id, clientId, particulars, amount, date from record where clientId = ?",
+                            [__clientId], function (err, results2) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        var decResult = [];
+                        for(var d=0;d<results2.length;d++){
+                            var row = results2[d];
+                            row.clientId = clientId;
+                            row.amount = crypto.decrypt(row.amount, req.session.password);
+                            row.date = crypto.decrypt(row.date, req.session.password);
+                            row.particulars = crypto.decrypt(row.particulars, req.session.password);
+                            decResult.push(row);
+                        }
+                        console.log("result:"+decResult);
+                        res.render('client/home', {title: 'Home', consultantName:consultantName, clients:[], error: {}, session: req.session, clientId:clientId, data:results2});
+                    });
+
+        //         });
+        //     }
+        // });
+    });
+});
 
 /* POST consultant add data page. */
 router.post('/add_data', function (req, res) {
@@ -109,15 +152,16 @@ router.post('/search', function(req,res){
     var date = req.body.date;
     var particulars = req.body.particulars;
     var amount = req.body.amount;
+    var password = req.session.password;
 
     var sql="select * from record where clientId='"+__clientId+"'";
 
     if(date!=undefined&& date!=""){
-        sql+=" and date='"+date+"'";
+        sql+=" and date='"+crypto.encrypt(date,password)+"'";
     }
 
     if(amount!=undefined&& amount!=""){
-        sql+=" and amount="+amount;
+        sql+=" and amount='"+crypto.encrypt(amount,password)+"'";
     }
 
     // sort in descending order
@@ -132,10 +176,20 @@ router.post('/search', function(req,res){
                 var decResult = [];
                 var enc_particular = "deposit";
                 if(particulars!=undefined && particulars!=""){
-                    enc_particular = crypto.encryptQuery(particulars,req.session.password);  
+                    //enc_particular = crypto.encryptQuery(particulars,req.session.password);  
                     for(var d=0;d<results2.length;d++){
                         var row = results2[d];
-                        if(crypto.search(row.particulars,enc_particular)){
+
+                        var match = false;
+                        var _parts = particulars.match(/(\w+)/g);
+                        for(var index in _parts){
+                            var _query = _parts[index];
+                            var _particulars = crypto.encryptQuery(_query,req.session.password);
+                            match=crypto.search(row.particulars,_particulars);
+                            if(match==false) break;
+                        }
+                        if(match){
+                        //if(crypto.search(row.particulars,enc_particular)){
                             row.clientId = clientId;
                             row.amount = crypto.decrypt(row.amount, req.session.password);
                             row.date = crypto.decrypt(row.date, req.session.password);

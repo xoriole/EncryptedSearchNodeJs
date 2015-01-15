@@ -19,10 +19,6 @@
                             <b><i class='fa fa-file'></i> <i class='fa fa-plus-square'></i> Add Records</b>
                         </div>
                         <div class="panel-body">
-                            <div class="alert alert-success alert-dismissible" role="alert">
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                <strong>Nothing here now</strong> 
-                            </div>
                             <form method="post" action="/consultant/add_data/<%= clientId %>" name="add_data_form">
                                 <div class="form-group">
                                     <label for="inputName">Name of client</label>
@@ -35,7 +31,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="inputParticulars">Particulars</label>
-                                    <textarea class="form-control" id="inputParticulars" name="particulars" placeholder="Record information" required>teset</textarea>
+                                    <textarea class="form-control" id="inputParticulars" name="particulars" placeholder="Record information" required></textarea>
                                 </div>
                                 <div class="form-group">
                                     <label for="inputUsername">Amount</label>
@@ -53,7 +49,7 @@
                 <div class="col-lg-8">
                     <div class="well well-sm alert-warning">
                         <b>Client : <%= clientInfo.name%> (<%= clientInfo.username %>)</b> 
-                        <a class="btn btn-xs btn-danger pull-right" href="/del_client/<%= clientId%>">Remove client </a> 
+                        <a class="btn btn-xs btn-danger pull-right" href="/consultant/del_client/<%= clientId%>" onclick="return confirm('Are you sure you want to delete the client?');">Remove client </a> 
                     </div>
                     <div class="panel panel-info">
                         <div class="panel-heading"><b>Client Data Records (<%= data.length%>)</b></div>
@@ -69,7 +65,7 @@
                             <% if(data.length!=0){%>
                                 <% for(var i=0;i<data.length;i++){%>
                                     <tr>
-                                      <th scope="row"><%= data[i].date.toISOString().slice(0, 10)%></th>
+                                      <th scope="row"><%= data[i].date%></th>
                                       <td style='max-width:300px'><%= data[i].particulars %></td>
                                       <td><%= data[i].amount %></td>
                                     </tr>

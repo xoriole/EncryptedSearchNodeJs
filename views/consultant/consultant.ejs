@@ -29,31 +29,22 @@
                             <form method="post" action="/consultant/add_client" name="login_form">
                                 <div class="form-group">
                                     <label for="inputName">Name of client</label>
-                                    <input type="text" class="form-control" id="inputName" name="inputName" placeholder="full name ">
+                                    <input type="text" class="form-control" id="inputName" name="inputName" placeholder="Full Name ">
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputUsername">Choose a username for client</label>
-                                    <input type="text" class="form-control" id="inputUsername" name="inputUsername" placeholder="username">
+                                    <label for="inputUsername">Email Address of client</label>
+                                    <input type="email" class="form-control" id="inputUsername" name="inputUsername" placeholder="Email Address">
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputPassword">Choose a Password for client</label>
-                                    <input type="password" class="form-control" id="inputPassword" name="inputPassword" placeholder="password">
+                                    <label for="inputPassword">Choose a Password</label>
+                                    <input type="password" class="form-control" id="inputPassword" name="inputPassword" placeholder="Password">
                                 </div>
                                 <button type="submit" class="btn btn-info">Add Client</button>
                             </form>
                         </div>
                     </div>
                     
-                </div>
-
-                <!-- <div class="col-lg-3">
-                    <div class="list-group">
-                        <a href="/home" class="list-group-item active">Home</a>
-                        <a href="/key_setup" class="list-group-item">Key Setup</a>
-                        <a href="/insert" class="list-group-item">Insert Data</a>
-                        <a href="/consultant/search" class="list-group-item">Search Data</a>
-                    </div>
-                </div> <!-- left sidebar --> 
+                </div> 
 
                 <div class="col-lg-8">
                     <div class="panel panel-info">
@@ -65,11 +56,16 @@
                         </div>
                         <div class="panel-body">
                             <div class="list-group">
-                                <% for(var i=0;i<clients.length;i++){ %>
-                                <a class="list-group-item" href="/consultant/client/<%= clients[i].id %>">
-                                    <b><%= clients[i].name %></b> (<%= clients[i].username %>)
-                                </a>
-                                <% } %>
+                                <% if(clients.length>0){ %>
+                                    <hr>
+                                    <% for(var i=0;i<clients.length;i++){ %>
+                                    <a class="list-group-item" href="/consultant/client/<%= clients[i].id %>">
+                                        <b><%= clients[i].name %></b> (<%= clients[i].username %>)
+                                    </a>
+                                    <% } %>
+                                <% }else{%>
+                                    <div class="list-group-item">No clients yet.</div>
+                                <%} %>
                             </div>
                         </div>
                     </div>
